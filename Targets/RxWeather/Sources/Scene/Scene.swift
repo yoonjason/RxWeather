@@ -18,7 +18,7 @@ extension Scene {
 
         switch self {
         case .main:
-            let vc = HomeViewController()
+            let vc = MainViewController()
             
             return vc
         }
