@@ -14,7 +14,6 @@ enum Scene {
 
 extension Scene {
     func instantiate() -> UIViewController {
-//        let storyboard = UIStoryboard(name: storyBoard, bundle: nil)
         switch self {
         case .main(let mainViewModel):
             var vc = MainViewController()

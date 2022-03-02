@@ -37,6 +37,7 @@ class ForecastTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 30)
         label.numberOfLines = 0
+        label.textAlignment = .right
         label.textColor = .white
         return label
     }()
