@@ -13,13 +13,15 @@ enum Scene {
 }
 
 extension Scene {
-//    func instantiate(from storyBoard: String = "Main") -> UIViewController {
-//        let storyboard = UIStoryboard(name: storyBoard, bundle: nil)
-//        
-////        switch self {
-////        case .main:
-//////            guard var vc = storyBoard.insta
-////        }
-//    }
+    func instantiate(from storyBoard: String = "Main") -> UIViewController {
+        let storyboard = UIStoryboard(name: storyBoard, bundle: nil)
+
+        switch self {
+        case .main:
+            let vc = HomeViewController()
+            
+            return vc
+        }
+    }
 }
 
