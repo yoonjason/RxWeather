@@ -54,6 +54,7 @@ class WeatherApi: NSObject, WeatherApiType {
                 self?.summaryRelay.accept(result.0)
                 self?.forecastRelay.accept(result.1)
             })
+            .disposed(by: rx.disposeBag)
         return Observable.combineLatest(summaryRelay.asObservable(), forecastRelay.asObservable())
     }
 }
