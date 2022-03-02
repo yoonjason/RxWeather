@@ -5,11 +5,34 @@
 //  Created by yoon on 2022/02/28.
 //  Copyright © 2022 kr.co. All rights reserved.
 //
-
+import CoreLocation
 import UIKit
+import RxCocoa
+import RxSwift
+import NSObject_Rx
 
-class MainViewController: UIViewController {
 
+class MainViewController: UIViewController, ViewModelBindableType {
+    
+    var viewModel: MainViewModel!
+    var topInset: CGFloat = 0.0
+    
+    func bindViewModel() {
+        viewModel.title
+            .bind(to: navTitle.rx.text)
+            .disposed(by: rx.disposeBag)
+        print("bind")
+        viewModel.weatherData
+            .drive(tableView.rx.items(dataSource: viewModel.dataSources))
+            .disposed(by: rx.disposeBag)
+        Observable.zip(tableView.rx.itemSelected, tableView.rx.modelSelected(WeatherData.self))
+            .withUnretained(self)
+            .bind { (vc, data) in
+                vc.tableView.deselectRow(at: data.0, animated: true)
+            }
+            .disposed(by: rx.disposeBag)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -41,7 +64,9 @@ class MainViewController: UIViewController {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        
+        tableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: SummaryTableViewCell.reuseIdentifier)
+        tableView.register(ForecastTableViewCell.self, forCellReuseIdentifier: ForecastTableViewCell.reuseIdentifier)
+        tableView.backgroundColor = .clear
         return tableView
     }()
 
@@ -68,9 +93,20 @@ class MainViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
-
-    @objc func moveSecondVC() {
-        let secondVC = SecondViewController()
-        self.navigationController?.pushViewController(secondVC, animated: true)
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        if topInset == 0.0 {
+            let first = IndexPath(row: 0, section: 0)
+            if let cell = tableView.cellForRow(at: first) {
+                topInset = tableView.frame.height - cell.frame.height
+                tableView.contentInset = UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0)
+            }
+        }
     }
 }

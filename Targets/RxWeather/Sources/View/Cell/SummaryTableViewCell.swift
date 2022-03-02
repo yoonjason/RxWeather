@@ -15,12 +15,14 @@ class SummaryTableViewCell: UITableViewCell {
     private let weatherImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.tintColor = .white
         return imageView
     }()
 
     private let statusLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 30)
         return label
     }()
@@ -29,6 +31,7 @@ class SummaryTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 17)
+        label.textColor = .white
         return label
     }()
     
@@ -36,20 +39,21 @@ class SummaryTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 30)
+        label.textColor = .white
         return label
     }()
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
 
     func setupViews() {
+        self.backgroundColor = .clear
         self.addSubview(weatherImageView)
         self.addSubview(statusLabel)
         self.addSubview(minMaxLabel)
@@ -75,6 +79,23 @@ class SummaryTableViewCell: UITableViewCell {
             currentTemperatureLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             currentTemperatureLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -11)
         ])
+    }
+    
+    func configure(from data: WeatherDataType, tempFormatter: NumberFormatter) {
+       weatherImageView.image = UIImage.from(name: data.icon)
+       statusLabel.text = data.description
+       
+       let max = data.maxTemperature ?? 0.0
+       let min = data.minTemperature ?? 0.0
+       
+       let maxStr = tempFormatter.string(for: max) ?? "-"
+       let minStr = tempFormatter.string(for: min) ?? "-"
+       
+       minMaxLabel.text = "최대 \(maxStr)º 최소 \(minStr)º"
+             
+       let currentStr = tempFormatter.string(for: data.temperature) ?? "-"
+       
+       currentTemperatureLabel.text = "\(currentStr)º"
     }
 
 }

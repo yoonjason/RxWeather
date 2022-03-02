@@ -9,17 +9,18 @@
 import UIKit
 
 enum Scene {
-    case main
+    case main(MainViewModel)
 }
 
 extension Scene {
-    func instantiate(from storyBoard: String = "Main") -> UIViewController {
-        let storyboard = UIStoryboard(name: storyBoard, bundle: nil)
-
+    func instantiate() -> UIViewController {
+//        let storyboard = UIStoryboard(name: storyBoard, bundle: nil)
         switch self {
-        case .main:
-            let vc = MainViewController()
-            
+        case .main(let mainViewModel):
+            var vc = MainViewController()
+            DispatchQueue.main.async {
+                vc.bind(viewModel: mainViewModel)
+            }
             return vc
         }
     }
